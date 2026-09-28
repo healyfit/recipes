@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recipes</title>
+<style>
+  :root {
+    --accent: #b3541e;
+    --ink: #1d1a16;
+    --muted: #6f675c;
+    --line: #e8e0d4;
+    --bg: #faf7f1;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+  }
+  header.top {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+    padding: 14px 18px 12px;
+  }
+  header.top h1 { margin: 0 0 8px; font-size: 1.4rem; letter-spacing: -0.01em; }
+  header.top h1 small { color: var(--muted); font-weight: 400; font-size: 0.85rem; margin-left: 8px; }
+  #search {
+    width: 100%; max-width: 560px; font-size: 1rem;
+    padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--card);
+  }
+  .chips { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    border-radius: 999px; padding: 5px 14px; font-size: 0.85rem; cursor: pointer;
+  }
+  .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  main { max-width: 900px; margin: 0 auto; padding: 18px; display: grid; gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .card-head { padding: 14px 18px; cursor: pointer; }
+  .card-head:hover { background: #fdfbf7; }
+  .card-head h2 { margin: 0; font-size: 1.15rem; letter-spacing: -0.01em; }
+  .meta { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+  .tags { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    font-size: 0.75rem; background: #f3ede1; color: #6b5a44;
+    border-radius: 999px; padding: 2px 10px;
+  }
+  .card-body { display: none; border-top: 1px solid var(--line); padding: 16px 18px; }
+  .card.open .card-body { display: block; }
+  .cols { display: grid; gap: 20px; }
+  @media (min-width: 700px) { .cols { grid-template-columns: 1fr 1.4fr; } }
+  h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 8px; }
+  ul.ing, ol.steps { margin: 0; padding-left: 20px; }
+  ul.ing li, ol.steps li { margin-bottom: 6px; }
+  .qty { font-weight: 600; }
+  .note { color: var(--muted); font-size: 0.9em; }
+  ul.notes { margin: 14px 0 0; padding-left: 20px; color: var(--muted); font-size: 0.92rem; }
+  .card-foot {
+    display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+    margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line);
+    font-size: 0.9rem; color: var(--muted);
+  }
+  .card-foot label { display: flex; align-items: center; gap: 6px; }
+  .card-foot input[type="number"] { width: 64px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; font-size: 0.9rem; }
+  .linklike { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.9rem; padding: 0; text-decoration: underline; }
+  pre.raw {
+    display: none; background: #1d1a16; color: #e8e0d4; padding: 14px;
+    border-radius: 8px; overflow-x: auto; font-size: 0.8rem; margin-top: 12px;
+    max-height: 420px; overflow-y: auto;
+  }
+  pre.raw.show { display: block; }
+  #status { text-align: center; color: var(--muted); padding: 40px 18px; }
+  #status.error { color: #a33; }
+  @media print {
+    header.top { position: static; }
+    #search, .chips, .card-foot { display: none; }
+    .card-body { display: block; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Recipes <small id="count"></small> <small id="built">updated 2026-09-27</small></h1>
+  <input id="search" type="search" placeholder="Search recipes, ingredients, tags…" autocomplete="off">
+  <div class="chips" id="meals"></div>
+</header>
+<main id="list"></main>
+<div id="status">Loading recipes…</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+<script>
+/*__RECIPES_DATA_START__*/
+const RECIPES = [{"id": "cincinnati-chili", "title": "Cincinnati Chili", "yield": {"quantity": 1, "unit": "batch"}, "time": {"prep": 15, "cook": 120}, "meal": ["dinner"], "cuisine": ["american", "cincinnati"], "tags": ["beef", "chili", "stovetop", "comfort-food"], "ingredients": [{"quantity": 4.5, "unit": "lb", "item": "ground beef", "note": "80/20"}, {"quantity": 2, "unit": "cups", "item": "beef bone broth"}, {"quantity": 4, "unit": "cups", "item": "water"}, {"quantity": 4, "unit": "cubes", "item": "beef bouillon"}, {"quantity": 32, "unit": "oz", "item": "tomato sauce"}, {"quantity": 4, "unit": "tbsp", "item": "tomato paste"}, {"quantity": 2, "unit": "large", "item": "onion", "note": "very finely minced or grated"}, {"quantity": 4, "unit": "tsp", "item": "minced garlic"}, {"quantity": 6, "unit": "tbsp", "item": "chili powder"}, {"quantity": 1, "unit": "tbsp", "item": "paprika"}, {"quantity": 1, "unit": "tbsp", "item": "ground cumin"}, {"quantity": 1, "unit": "tbsp", "item": "ground cinnamon"}, {"quantity": 0.5, "unit": "tsp", "item": "ground allspice"}, {"quantity": 0.125, "unit": "tsp", "item": "ground cloves"}, {"quantity": 0.5, "unit": "tsp", "item": "cayenne pepper"}, {"quantity": 1, "unit": "tsp", "item": "black pepper"}, {"quantity": 3, "unit": "tbsp", "item": "Worcestershire sauce"}, {"quantity": 1, "unit": "tbsp", "item": "soy sauce"}, {"quantity": 1, "unit": "tbsp", "item": "brown sugar"}, {"quantity": 1, "unit": "tbsp", "item": "cocoa powder"}, {"quantity": 2, "unit": "tbsp", "item": "apple cider vinegar"}], "instructions": ["Add the ground beef, bone broth, and water to a large pot over medium heat.", "Break the beef apart thoroughly in the liquid as it heats, keeping the texture very fine rather than allowing large chunks to form.", "Add the bouillon, tomato sauce, tomato paste, onions, garlic, chili powder, paprika, cumin, cinnamon, allspice, cloves, cayenne, black pepper, Worcestershire sauce, soy sauce, brown sugar, cocoa powder, and apple cider vinegar.", "Stir thoroughly and bring to a gentle simmer.", "Reduce the heat and simmer uncovered, stirring occasionally, until the chili has reduced and the flavors are well developed.", "Adjust the final consistency with additional water if needed."], "notes": ["Keep the beef texture very fine for a traditional Cincinnati-style consistency.", "The recipe is built around approximately 4.5 lb of ground beef.", "Simmer longer for a thicker final consistency."]}, {"id": "lemon-herb-chicken-tray", "title": "Lemon Herb Chicken Tray", "yield": {"quantity": 1, "unit": "batch"}, "meal": ["dinner"], "cuisine": ["american"], "tags": ["chicken", "sheet-pan", "oven"], "ingredients": [{"quantity": 700, "unit": "g", "item": "chicken breast"}, {"quantity": 800, "unit": "g", "item": "baby potatoes", "note": "halved"}, {"quantity": 400, "unit": "g", "item": "green beans", "note": "trimmed"}, {"quantity": 36, "unit": "g", "item": "olive oil"}, {"quantity": 45, "unit": "g", "item": "lemon juice"}, {"quantity": 18, "unit": "g", "item": "garlic", "note": "minced"}, {"quantity": 4, "unit": "g", "item": "dried oregano"}, {"item": "salt", "note": "to taste"}, {"item": "pepper", "note": "to taste"}], "instructions": ["Heat the oven to 425°F / 220°C. Halve the potatoes and trim the beans.", "Toss potatoes with half the oil, oregano, salt, and pepper. Roast for 15 minutes.", "Add chicken and beans. Mix remaining oil with lemon and garlic, then spoon over the tray.", "Roast 20–25 minutes, until the chicken is cooked through and potatoes are tender.", "Weigh the complete cooked batch before portioning."], "notes": [{"Batch-weigh workflow": "weigh the finished batch and log grams on the plate."}]}, {"id": "berry-cheesecake-oats", "title": "Berry Cheesecake Oats", "yield": {"quantity": 1, "unit": "batch"}, "meal": ["breakfast"], "tags": ["oats", "no-cook", "high-protein"], "ingredients": [{"quantity": 50, "unit": "g", "item": "rolled oats"}, {"quantity": 170, "unit": "g", "item": "nonfat Greek yogurt"}, {"quantity": 100, "unit": "g", "item": "milk"}, {"quantity": 20, "unit": "g", "item": "vanilla protein powder"}, {"quantity": 10, "unit": "g", "item": "chia seeds"}, {"quantity": 100, "unit": "g", "item": "mixed berries"}, {"quantity": 1, "unit": "g", "item": "lemon zest"}], "instructions": ["Whisk yogurt, milk, protein powder, and lemon zest until smooth.", "Stir in oats and chia seeds. Fold in half the berries.", "Cover and refrigerate at least 6 hours.", "Top with the remaining berries before eating."]}, {"id": "turkey-pesto-pasta", "title": "Turkey Pesto Pasta", "yield": {"quantity": 1, "unit": "batch"}, "meal": ["dinner"], "cuisine": ["italian-american"], "tags": ["turkey", "pasta", "stovetop", "high-protein"], "ingredients": [{"quantity": 400, "unit": "g", "item": "dry pasta"}, {"quantity": 680, "unit": "g", "item": "ground turkey", "note": "93% lean"}, {"quantity": 120, "unit": "g", "item": "pesto"}, {"quantity": 170, "unit": "g", "item": "baby spinach"}, {"quantity": 150, "unit": "g", "item": "Greek yogurt"}, {"quantity": 40, "unit": "g", "item": "Parmesan", "note": "grated"}], "instructions": ["Boil pasta until just tender. Reserve 150 g pasta water, then drain.", "Brown the turkey in a large skillet; season generously.", "Reduce heat. Stir in pesto, yogurt, and enough pasta water to loosen.", "Add pasta and spinach; toss until glossy and the spinach wilts.", "Finish with Parmesan, then weigh the cooked batch."], "notes": [{"Batch-weigh workflow": "weigh the finished batch and log grams on the plate."}]}, {"id": "ginger-salmon-rice-bowl", "title": "Ginger Salmon Rice Bowl", "yield": {"quantity": 1, "unit": "batch"}, "meal": ["dinner"], "cuisine": ["japanese-inspired"], "tags": ["salmon", "rice-bowl", "oven"], "ingredients": [{"quantity": 680, "unit": "g", "item": "salmon fillet"}, {"quantity": 300, "unit": "g", "item": "jasmine rice", "note": "dry weight"}, {"quantity": 240, "unit": "g", "item": "shelled edamame"}, {"quantity": 300, "unit": "g", "item": "cucumber"}, {"quantity": 60, "unit": "g", "item": "soy sauce"}, {"quantity": 30, "unit": "g", "item": "honey"}, {"quantity": 18, "unit": "g", "item": "fresh ginger"}, {"quantity": 12, "unit": "g", "item": "sesame oil"}], "instructions": ["Cook rice according to the package and steam the edamame.", "Mix soy sauce, honey, ginger, and sesame oil.", "Brush salmon with half the glaze and roast at 425°F / 220°C for 10–13 minutes.", "Divide rice, cucumber, edamame, and salmon among bowls. Spoon over remaining glaze."]}, {"id": "chocolate-banana-protein-muffins", "title": "Chocolate Banana Protein Muffins", "yield": {"quantity": 1, "unit": "batch"}, "meal": ["snack"], "tags": ["muffins", "baking", "high-protein"], "ingredients": [{"quantity": 300, "unit": "g", "item": "ripe banana", "note": "peeled weight"}, {"quantity": 220, "unit": "g", "item": "oat flour"}, {"quantity": 90, "unit": "g", "item": "chocolate protein powder"}, {"quantity": 100, "unit": "g", "item": "eggs", "note": "without shell"}, {"quantity": 170, "unit": "g", "item": "Greek yogurt"}, {"quantity": 35, "unit": "g", "item": "cocoa powder"}, {"quantity": 70, "unit": "g", "item": "chocolate chips"}, {"quantity": 8, "unit": "g", "item": "baking powder"}], "instructions": ["Mash banana smooth, then whisk in eggs, yogurt, and remaining wet ingredients.", "Fold in oat flour, protein powder, cocoa, and baking powder until just combined.", "Stir in chocolate chips.", "Portion into a lined muffin tin and bake until set."]}];
+/*__RECIPES_DATA_END__*/
+let activeMeal = "all";
+let query = "";
+const scales = {};
+
+const $ = (s, el) => (el || document).querySelector(s);
+
+function fmtQty(q, scale) {
+  if (q === null || q === undefined) return "";
+  const v = Math.round(q * scale * 100) / 100;
+  return String(v);
+}
+
+function ingredientText(ing, scale) {
+  const parts = [];
+  const q = fmtQty(ing.quantity, scale);
+  if (q) parts.push('<span class="qty">' + q + "</span>");
+  if (ing.unit) parts.push(ing.unit);
+  parts.push(ing.item);
+  let s = parts.join(" ");
+  if (ing.note) s += ' <span class="note">— ' + escapeHtml(ing.note) + "</span>";
+  return s;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function metaLine(r) {
+  const bits = [];
+  if (r.yield) bits.push("Yield: " + r.yield.quantity + " " + r.yield.unit);
+  if (r.time) {
+    const t = [];
+    if (r.time.prep) t.push("prep " + r.time.prep + " min");
+    if (r.time.cook) t.push("cook " + r.time.cook + " min");
+    if (t.length) bits.push(t.join(" · "));
+  }
+  if (r.cuisine) bits.push([].concat(r.cuisine).join(", "));
+  return bits.join(" &nbsp;·&nbsp; ");
+}
+
+function cardHtml(r) {
+  const scale = scales[r.id] || 1;
+  const ings = r.ingredients.map(i => "<li>" + ingredientText(i, scale) + "</li>").join("");
+  const steps = (r.instructions || []).map(s => "<li>" + escapeHtml(s) + "</li>").join("");
+  const notes = (r.notes || []).map(n => "<li>" + escapeHtml(n) + "</li>").join("");
+  const tags = (r.tags || []).map(t => '<span class="tag">' + escapeHtml(t) + "</span>").join("");
+  const meals = [].concat(r.meal || []).map(m => '<span class="tag">' + escapeHtml(m) + "</span>").join("");
+  return (
+    '<article class="card" data-id="' + escapeHtml(r.id) + '">' +
+      '<div class="card-head">' +
+        "<h2>" + escapeHtml(r.title) + "</h2>" +
+        '<div class="meta">' + metaLine(r) + "</div>" +
+        '<div class="tags">' + meals + tags + "</div>" +
+      "</div>" +
+      '<div class="card-body">' +
+        '<div class="cols">' +
+          "<div><h3>Ingredients</h3><ul class='ing'>" + ings + "</ul></div>" +
+          "<div><h3>Instructions</h3><ol class='steps'>" + steps + "</ol></div>" +
+        "</div>" +
+        (notes ? "<ul class='notes'>" + notes + "</ul>" : "") +
+        '<div class="card-foot">' +
+          '<label>Scale <input type="number" min="0.25" step="0.25" value="' + scale + '" data-scale></label>' +
+          '<button class="linklike" data-yaml>View YAML</button>' +
+        "</div>" +
+        "<pre class='raw'></pre>" +
+      "</div>" +
+    "</article>"
+  );
+}
+
+function matches(r) {
+  if (activeMeal !== "all" && ![].concat(r.meal || []).includes(activeMeal)) return false;
+  if (!query) return true;
+  const hay = [r.title, r.id, (r.tags || []).join(" "), (r.meal || []).join(" "),
+               (r.ingredients || []).map(i => i.item + " " + (i.note || "")).join(" ")]
+              .join(" ").toLowerCase();
+  return query.toLowerCase().split(/\s+/).every(w => hay.includes(w));
+}
+
+function render() {
+  const list = $("#list");
+  const shown = RECIPES.filter(matches);
+  list.innerHTML = shown.map(cardHtml).join("");
+  $("#count").textContent = shown.length + " of " + RECIPES.length;
+  $("#status").style.display = shown.length ? "none" : "block";
+  if (!shown.length) { $("#status").textContent = "No recipes match."; $("#status").className = ""; }
+  if (shown.length === 1) list.querySelector(".card").classList.add("open");
+}
+
+function renderMeals() {
+  const meals = [...new Set(RECIPES.flatMap(r => [].concat(r.meal || [])))].sort();
+  $("#meals").innerHTML = ["all", ...meals].map(m =>
+    '<button class="chip' + (m === activeMeal ? " active" : "") + '" data-meal="' + escapeHtml(m) + '">' +
+    (m === "all" ? "All" : escapeHtml(m)) + "</button>").join("");
+}
+
+document.addEventListener("click", e => {
+  const chip = e.target.closest("[data-meal]");
+  if (chip) { activeMeal = chip.dataset.meal; renderMeals(); render(); return; }
+  const ybtn = e.target.closest("[data-yaml]");
+  if (ybtn) {
+    const card = ybtn.closest(".card");
+    const pre = card.querySelector("pre.raw");
+    const r = RECIPES.find(x => x.id === card.dataset.id);
+    if (!pre.classList.contains("show")) {
+      pre.textContent = window.jsyaml
+        ? jsyaml.dump(r, { lineWidth: -1 })
+        : JSON.stringify(r, null, 2);
+    }
+    pre.classList.toggle("show");
+    ybtn.textContent = pre.classList.contains("show") ? "Hide YAML" : "View YAML";
+    return;
+  }
+  const head = e.target.closest(".card-head");
+  if (head) head.closest(".card").classList.toggle("open");
+});
+
+document.addEventListener("change", e => {
+  if (e.target.matches("[data-scale]")) {
+    const card = e.target.closest(".card");
+    const v = parseFloat(e.target.value);
+    scales[card.dataset.id] = (isNaN(v) || v <= 0) ? 1 : v;
+    render();
+    const el = document.querySelector('.card[data-id="' + card.dataset.id + '"]');
+    if (el) el.classList.add("open");
+  }
+});
+
+$("#search").addEventListener("input", e => { query = e.target.value.trim(); render(); });
+
+// Recipe data is baked in at build time (build_viewer.py), so this file is
+// fully self-contained: it works from GitHub Pages, a local mirror, or offline.
+if (!RECIPES.length) {
+  const s = $("#status");
+  s.textContent = "No recipes embedded — rebuild with build_viewer.py.";
+  s.className = "error";
+} else {
+  $("#status").style.display = "none";
+  renderMeals();
+  render();
+}
+</script>
+</body>
+</html>
