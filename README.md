@@ -59,3 +59,13 @@ Rules:
 
 `WORKFLOW.md` documents the dinner grocery flow that consumes this file:
 request → match recipe → bulk pantry prompt → resolve products → cart → review.
+
+## Viewer
+
+`viewer.html` is a single-file viewer for everyday reference. It loads
+`recipes.yaml` live from this repo, so it's always current — no rebuild
+needed when recipes change. Search, filter by meal, scale ingredient
+quantities, and inspect any recipe's raw YAML.
+
+Open the rendered viewer at:
+https://raw.githack.com/healyfit/recipes/main/viewer.html
