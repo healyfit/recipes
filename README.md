@@ -68,4 +68,4 @@ needed when recipes change. Search, filter by meal, scale ingredient
 quantities, and inspect any recipe's raw YAML.
 
 Open the rendered viewer at:
-https://raw.githack.com/healyfit/recipes/main/viewer.html
+https://healyfit.github.io/recipes/viewer.html
