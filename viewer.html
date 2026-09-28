@@ -84,7 +84,7 @@
 </head>
 <body>
 <header class="top">
-  <h1>Recipes <small id="count"></small></h1>
+  <h1>Recipes <small id="count"></small> <small id="built">updated 2026-09-27</small></h1>
   <input id="search" type="search" placeholder="Search recipes, ingredients, tags…" autocomplete="off">
   <div class="chips" id="meals"></div>
 </header>
@@ -93,8 +93,9 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
 <script>
-const YAML_URL = "https://raw.githubusercontent.com/healyfit/recipes/main/recipes.yaml";
-let RECIPES = [];
+/*__RECIPES_DATA_START__*/
+const RECIPES = [{"id": "cincinnati-chili", "title": "Cincinnati Chili", "yield": {"quantity": 1, "unit": "batch"}, "time": {"prep": 15, "cook": 120}, "meal": ["dinner"], "cuisine": ["american", "cincinnati"], "tags": ["beef", "chili", "stovetop", "comfort-food"], "ingredients": [{"quantity": 4.5, "unit": "lb", "item": "ground beef", "note": "80/20"}, {"quantity": 2, "unit": "cups", "item": "beef bone broth"}, {"quantity": 4, "unit": "cups", "item": "water"}, {"quantity": 4, "unit": "cubes", "item": "beef bouillon"}, {"quantity": 32, "unit": "oz", "item": "tomato sauce"}, {"quantity": 4, "unit": "tbsp", "item": "tomato paste"}, {"quantity": 2, "unit": "large", "item": "onion", "note": "very finely minced or grated"}, {"quantity": 4, "unit": "tsp", "item": "minced garlic"}, {"quantity": 6, "unit": "tbsp", "item": "chili powder"}, {"quantity": 1, "unit": "tbsp", "item": "paprika"}, {"quantity": 1, "unit": "tbsp", "item": "ground cumin"}, {"quantity": 1, "unit": "tbsp", "item": "ground cinnamon"}, {"quantity": 0.5, "unit": "tsp", "item": "ground allspice"}, {"quantity": 0.125, "unit": "tsp", "item": "ground cloves"}, {"quantity": 0.5, "unit": "tsp", "item": "cayenne pepper"}, {"quantity": 1, "unit": "tsp", "item": "black pepper"}, {"quantity": 3, "unit": "tbsp", "item": "Worcestershire sauce"}, {"quantity": 1, "unit": "tbsp", "item": "soy sauce"}, {"quantity": 1, "unit": "tbsp", "item": "brown sugar"}, {"quantity": 1, "unit": "tbsp", "item": "cocoa powder"}, {"quantity": 2, "unit": "tbsp", "item": "apple cider vinegar"}], "instructions": ["Add the ground beef, bone broth, and water to a large pot over medium heat.", "Break the beef apart thoroughly in the liquid as it heats, keeping the texture very fine rather than allowing large chunks to form.", "Add the bouillon, tomato sauce, tomato paste, onions, garlic, chili powder, paprika, cumin, cinnamon, allspice, cloves, cayenne, black pepper, Worcestershire sauce, soy sauce, brown sugar, cocoa powder, and apple cider vinegar.", "Stir thoroughly and bring to a gentle simmer.", "Reduce the heat and simmer uncovered, stirring occasionally, until the chili has reduced and the flavors are well developed.", "Adjust the final consistency with additional water if needed."], "notes": ["Keep the beef texture very fine for a traditional Cincinnati-style consistency.", "The recipe is built around approximately 4.5 lb of ground beef.", "Simmer longer for a thicker final consistency."]}, {"id": "lemon-herb-chicken-tray", "title": "Lemon Herb Chicken Tray", "yield": {"quantity": 1, "unit": "batch"}, "meal": ["dinner"], "cuisine": ["american"], "tags": ["chicken", "sheet-pan", "oven"], "ingredients": [{"quantity": 700, "unit": "g", "item": "chicken breast"}, {"quantity": 800, "unit": "g", "item": "baby potatoes", "note": "halved"}, {"quantity": 400, "unit": "g", "item": "green beans", "note": "trimmed"}, {"quantity": 36, "unit": "g", "item": "olive oil"}, {"quantity": 45, "unit": "g", "item": "lemon juice"}, {"quantity": 18, "unit": "g", "item": "garlic", "note": "minced"}, {"quantity": 4, "unit": "g", "item": "dried oregano"}, {"item": "salt", "note": "to taste"}, {"item": "pepper", "note": "to taste"}], "instructions": ["Heat the oven to 425°F / 220°C. Halve the potatoes and trim the beans.", "Toss potatoes with half the oil, oregano, salt, and pepper. Roast for 15 minutes.", "Add chicken and beans. Mix remaining oil with lemon and garlic, then spoon over the tray.", "Roast 20–25 minutes, until the chicken is cooked through and potatoes are tender.", "Weigh the complete cooked batch before portioning."], "notes": [{"Batch-weigh workflow": "weigh the finished batch and log grams on the plate."}]}, {"id": "berry-cheesecake-oats", "title": "Berry Cheesecake Oats", "yield": {"quantity": 1, "unit": "batch"}, "meal": ["breakfast"], "tags": ["oats", "no-cook", "high-protein"], "ingredients": [{"quantity": 50, "unit": "g", "item": "rolled oats"}, {"quantity": 170, "unit": "g", "item": "nonfat Greek yogurt"}, {"quantity": 100, "unit": "g", "item": "milk"}, {"quantity": 20, "unit": "g", "item": "vanilla protein powder"}, {"quantity": 10, "unit": "g", "item": "chia seeds"}, {"quantity": 100, "unit": "g", "item": "mixed berries"}, {"quantity": 1, "unit": "g", "item": "lemon zest"}], "instructions": ["Whisk yogurt, milk, protein powder, and lemon zest until smooth.", "Stir in oats and chia seeds. Fold in half the berries.", "Cover and refrigerate at least 6 hours.", "Top with the remaining berries before eating."]}, {"id": "turkey-pesto-pasta", "title": "Turkey Pesto Pasta", "yield": {"quantity": 1, "unit": "batch"}, "meal": ["dinner"], "cuisine": ["italian-american"], "tags": ["turkey", "pasta", "stovetop", "high-protein"], "ingredients": [{"quantity": 400, "unit": "g", "item": "dry pasta"}, {"quantity": 680, "unit": "g", "item": "ground turkey", "note": "93% lean"}, {"quantity": 120, "unit": "g", "item": "pesto"}, {"quantity": 170, "unit": "g", "item": "baby spinach"}, {"quantity": 150, "unit": "g", "item": "Greek yogurt"}, {"quantity": 40, "unit": "g", "item": "Parmesan", "note": "grated"}], "instructions": ["Boil pasta until just tender. Reserve 150 g pasta water, then drain.", "Brown the turkey in a large skillet; season generously.", "Reduce heat. Stir in pesto, yogurt, and enough pasta water to loosen.", "Add pasta and spinach; toss until glossy and the spinach wilts.", "Finish with Parmesan, then weigh the cooked batch."], "notes": [{"Batch-weigh workflow": "weigh the finished batch and log grams on the plate."}]}, {"id": "ginger-salmon-rice-bowl", "title": "Ginger Salmon Rice Bowl", "yield": {"quantity": 1, "unit": "batch"}, "meal": ["dinner"], "cuisine": ["japanese-inspired"], "tags": ["salmon", "rice-bowl", "oven"], "ingredients": [{"quantity": 680, "unit": "g", "item": "salmon fillet"}, {"quantity": 300, "unit": "g", "item": "jasmine rice", "note": "dry weight"}, {"quantity": 240, "unit": "g", "item": "shelled edamame"}, {"quantity": 300, "unit": "g", "item": "cucumber"}, {"quantity": 60, "unit": "g", "item": "soy sauce"}, {"quantity": 30, "unit": "g", "item": "honey"}, {"quantity": 18, "unit": "g", "item": "fresh ginger"}, {"quantity": 12, "unit": "g", "item": "sesame oil"}], "instructions": ["Cook rice according to the package and steam the edamame.", "Mix soy sauce, honey, ginger, and sesame oil.", "Brush salmon with half the glaze and roast at 425°F / 220°C for 10–13 minutes.", "Divide rice, cucumber, edamame, and salmon among bowls. Spoon over remaining glaze."]}, {"id": "chocolate-banana-protein-muffins", "title": "Chocolate Banana Protein Muffins", "yield": {"quantity": 1, "unit": "batch"}, "meal": ["snack"], "tags": ["muffins", "baking", "high-protein"], "ingredients": [{"quantity": 300, "unit": "g", "item": "ripe banana", "note": "peeled weight"}, {"quantity": 220, "unit": "g", "item": "oat flour"}, {"quantity": 90, "unit": "g", "item": "chocolate protein powder"}, {"quantity": 100, "unit": "g", "item": "eggs", "note": "without shell"}, {"quantity": 170, "unit": "g", "item": "Greek yogurt"}, {"quantity": 35, "unit": "g", "item": "cocoa powder"}, {"quantity": 70, "unit": "g", "item": "chocolate chips"}, {"quantity": 8, "unit": "g", "item": "baking powder"}], "instructions": ["Mash banana smooth, then whisk in eggs, yogurt, and remaining wet ingredients.", "Fold in oat flour, protein powder, cocoa, and baking powder until just combined.", "Stir in chocolate chips.", "Portion into a lined muffin tin and bake until set."]}];
+/*__RECIPES_DATA_END__*/
 let activeMeal = "all";
 let query = "";
 const scales = {};
@@ -199,7 +200,11 @@ document.addEventListener("click", e => {
     const card = ybtn.closest(".card");
     const pre = card.querySelector("pre.raw");
     const r = RECIPES.find(x => x.id === card.dataset.id);
-    if (!pre.classList.contains("show")) pre.textContent = jsyaml.dump(r, { lineWidth: -1 });
+    if (!pre.classList.contains("show")) {
+      pre.textContent = window.jsyaml
+        ? jsyaml.dump(r, { lineWidth: -1 })
+        : JSON.stringify(r, null, 2);
+    }
     pre.classList.toggle("show");
     ybtn.textContent = pre.classList.contains("show") ? "Hide YAML" : "View YAML";
     return;
@@ -221,20 +226,17 @@ document.addEventListener("change", e => {
 
 $("#search").addEventListener("input", e => { query = e.target.value.trim(); render(); });
 
-fetch(YAML_URL)
-  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
-  .then(t => {
-    const data = jsyaml.load(t);
-    RECIPES = data.recipes || [];
-    $("#status").style.display = "none";
-    renderMeals();
-    render();
-  })
-  .catch(err => {
-    const s = $("#status");
-    s.textContent = "Could not load recipes: " + err.message;
-    s.className = "error";
-  });
+// Recipe data is baked in at build time (build_viewer.py), so this file is
+// fully self-contained: it works from GitHub Pages, a local mirror, or offline.
+if (!RECIPES.length) {
+  const s = $("#status");
+  s.textContent = "No recipes embedded — rebuild with build_viewer.py.";
+  s.className = "error";
+} else {
+  $("#status").style.display = "none";
+  renderMeals();
+  render();
+}
 </script>
 </body>
 </html>
