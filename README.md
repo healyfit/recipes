@@ -62,10 +62,10 @@ request → match recipe → bulk pantry prompt → resolve products → cart �
 
 ## Viewer
 
-`viewer.html` is a single-file viewer for everyday reference. It loads
+`recipes.html` is a single-file viewer for everyday reference. It loads
 `recipes.yaml` live from this repo, so it's always current — no rebuild
 needed when recipes change. Search, filter by meal, scale ingredient
 quantities, and inspect any recipe's raw YAML.
 
 Open the rendered viewer at:
-https://healyfit.github.io/recipes/viewer.html
+https://healyfit.github.io/recipes/recipes.html
